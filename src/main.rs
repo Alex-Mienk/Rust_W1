@@ -39,15 +39,11 @@ fn find_collatz_above_threshold(
     max_starting_number: u64,
     threshold: u64,
     max_iterations: usize,
-) -> (u64, usize, bool) {
-    let mut matching_number = 0;
-    let mut steps_needed = 0;
-    let mut found = false;
-
-    'search: for starting_number in 1..=max_starting_number {
+) -> (u64, bool) {
+    for starting_number in 1..=max_starting_number {
         let mut current_number = starting_number;
 
-        for step in 1..=max_iterations {
+        for _ in 1..=max_iterations {
             if current_number.is_multiple_of(2) {
                 current_number /= 2;
             } else {
@@ -55,10 +51,7 @@ fn find_collatz_above_threshold(
             }
 
             if current_number > threshold {
-                matching_number = starting_number;
-                steps_needed = step;
-                found = true;
-                break 'search;
+                return (starting_number, true);
             }
 
             if current_number == 1 {
@@ -67,7 +60,7 @@ fn find_collatz_above_threshold(
         }
     }
 
-    (matching_number, steps_needed, found)
+    (0, false)
 }
 
 fn main() {
@@ -105,13 +98,6 @@ fn main() {
         println!("Exiting at the user's request...");
     }
 
-    let (starting_number, steps, found) = find_collatz_above_threshold(100, 1_000, 100);
-    if found {
-        println!(
-            "The Collatz sequence starting at {} exceeds 1000 after {} steps.",
-            starting_number, steps
-        );
-    } else {
-        println!("No Collatz sequence starting from 1 to 100 exceeded 1000 within 100 steps.");
-    }
+    let collatz_search_result = find_collatz_above_threshold(100, 1_000, 100);
+    println!("Final result: {:?}", collatz_search_result);
 }
